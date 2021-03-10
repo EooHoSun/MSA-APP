@@ -29,13 +29,15 @@ import java.util.stream.Collectors;
 @Transactional
 @AllArgsConstructor
 public class PostService {
-    @Autowired
-    private DiscoveryClient discoveryClient;
-    @Autowired
-    private PostKafkaService kafkaService;
-    private PostRepository repository;
-    private PostMapper mapper;
-    private PostCatgRepository cRepository;
+
+    /**
+     * bean injection은 @Autowired(field 주입) 보다는 생성자 주입 방식 선호
+     * = > 순환참조등의 문제 compile시 확인 가능
+     */
+    private final PostKafkaService kafkaService;
+    private final PostRepository repository;
+    private final PostMapper mapper;
+    private final PostCatgRepository cRepository;
 
 
     public List<PostDTO> findAll(){
@@ -62,9 +64,14 @@ public class PostService {
                 .map(mapper::toPostDTO)
                 .orElse(null);
     }
+
     public PostDTO insertPost(PostDTO dto){
-        long postMaxNum = repository.getMaxPostNum();
-        PostVO vo = PostVO.builder().postNum(postMaxNum).postCatgUuid(dto.getPostVO().getPostCatgUuid()).build();
+
+        PostVO vo = PostVO
+                .builder()
+                .postNum(repository.getMaxPostNum())
+                .postCatgUuid(dto.getPostVO().getPostCatgUuid())
+                .build();
 
         PostEntity entity =
                 PostEntity.builder()
@@ -72,7 +79,6 @@ public class PostService {
                 .postContents(dto.getPostContents())
                 .postTitle(dto.getPostTitle())
                 .postUseYn(true)
-                .userNum(dto.getUserNum())
                 .build();
 
         repository.save(entity);
@@ -88,7 +94,15 @@ public class PostService {
     }
 
     public boolean deletePost(PostDTO dto){
-        PostVO vo = PostVO.builder().postNum(dto.getPostVO().getPostNum()).postCatgUuid(dto.getPostVO().getPostCatgUuid()).build();
+        PostVO vo = PostVO
+                    .builder()
+                    .postNum(dto
+                            .getPostVO()
+                            .getPostNum())
+                    .postCatgUuid(dto
+                            .getPostVO()
+                            .getPostCatgUuid())
+                    .build();
         repository.deleteById(vo);
         return !repository.existsById(vo);
     }

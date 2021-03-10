@@ -17,4 +17,13 @@ public class PostVO implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long postNum;
     private String postCatgUuid;
+    private long userNum;
+
+    @Override
+    public String toString() {
+        return "PostVO{" +
+                "postNum=" + postNum +
+                ", postCatgUuid='" + postCatgUuid + '\'' +
+                '}';
+    }
 }

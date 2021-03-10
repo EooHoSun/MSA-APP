@@ -27,6 +27,14 @@ spring:
   profiles: local
 server:
   port: 8080
+  ssl:
+    enabled: true
+    key-store: C:\Users\hosun\payupplay.jks
+    key-store-password: payupunico
+    key-alias: payupplay
+    trust-store: C:\Users\hosun\payupplay.ts
+    trust-store-password: payupunico
+
 zuul:
   routes:
     user-service:

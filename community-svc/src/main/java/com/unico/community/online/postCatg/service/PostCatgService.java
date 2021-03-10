@@ -5,22 +5,22 @@ import com.unico.community.online.postCatg.entity.PostCatgEntity;
 import com.unico.community.online.postCatg.repository.PostCatgMapper;
 import com.unico.community.online.postCatg.repository.PostCatgRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Log4j2
 @Service
 @Transactional
 @AllArgsConstructor
 public class PostCatgService {
 
-    private PostCatgMapper mapper;
-    private PostCatgRepository repository;
+    private final PostCatgMapper mapper;
+    private final PostCatgRepository repository;
 
     public List<PostCatgDTO> findAll(){
         return repository

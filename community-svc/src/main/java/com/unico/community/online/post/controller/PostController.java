@@ -7,18 +7,19 @@ import com.unico.community.online.post.dto.PostVODTO;
 import com.unico.community.online.post.service.PostService;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Log
+@Log4j2
 @AllArgsConstructor
 @RequestMapping( "/post" )
 @RestController
 public class PostController {
 
-    private PostService service;
+    private final PostService service;
 
     @GetMapping("/v1")
     public ResponseEntity<List<PostDTO>> findAll(){
@@ -55,7 +56,6 @@ public class PostController {
         try{
             result = ResponseEntity.ok(service.findOneById(voDTO));
         }catch(Exception e){
-
         }
         return result;
     }
@@ -63,7 +63,6 @@ public class PostController {
     @PostMapping("/v1")
     public ResponseEntity<PostDTO> insertPost(@RequestBody PostDTO dto) throws Exception {
         ResponseEntity<PostDTO> result = null;
-        log.info("insertPost : " + dto);
         try{
             result = ResponseEntity.ok(service.insertPost(dto));
         }catch(Exception e){
@@ -85,11 +84,11 @@ public class PostController {
     }
 
     @DeleteMapping("/v1")
-    public ResponseEntity<Boolean> deletePost(@RequestBody PostDTO dto){
-        ResponseEntity<Boolean> result = null;
+    public boolean deletePost(@RequestBody PostDTO dto){
+        boolean result = false;
 
         try{
-            result = ResponseEntity.ok(service.deletePost(dto));
+            result = service.deletePost(dto);
         }catch(Exception e){
 
         }

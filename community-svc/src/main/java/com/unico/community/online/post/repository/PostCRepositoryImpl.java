@@ -10,22 +10,25 @@ import com.unico.community.online.post.dto.PostDTO;
 import com.unico.community.online.post.dto.PostSearchDTO;
 import com.unico.community.online.post.entity.PostEntity;
 import com.unico.community.online.post.entity.QPostEntity;
+import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.querydsl.QuerydslUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Log
+@Log4j2
+@AllArgsConstructor
 public class PostCRepositoryImpl implements PostCRepository {
-    @PersistenceContext
-    EntityManager em;
-    @Autowired
-    JPAQueryFactory qf;
-    QPostEntity qEntity = QPostEntity.postEntity;
+
+    private final EntityManager em;
+    private final JPAQueryFactory qf;
+    private final QPostEntity qEntity = QPostEntity.postEntity;
 
 
 
@@ -46,8 +49,6 @@ public class PostCRepositoryImpl implements PostCRepository {
 
     @Override
     public List<PostEntity> findAllBySearchCondAndPaging(PostSearchDTO dto) {
-
-
         return qf
             .selectFrom(qEntity)
             .where(
@@ -58,9 +59,12 @@ public class PostCRepositoryImpl implements PostCRepository {
                     )
             .offset(dto.getPageable().getOffset())
             .limit(dto.getPageable().getPageSize())
-            .orderBy(dto.getPageable().getSort().stream().toArray(OrderSpecifier[]::new))
+            .orderBy(dto.getOrderArr())
             .fetch();
+    }
 
-
+    @Override
+    public String toString() {
+        return "PostCRepositoryImpl{}";
     }
 }

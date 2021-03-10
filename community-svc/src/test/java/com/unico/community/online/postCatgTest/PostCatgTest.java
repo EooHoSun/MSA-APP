@@ -9,7 +9,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -19,49 +18,47 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class PostCatgTest {
     @Rule
     public final TestName testName = new TestName();
+    private final JdbcTemplate template;
+    private final PostCatgService service;
 
-    @Autowired
-    private JdbcTemplate template;
-
-    @Autowired
-    private PostCatgService service;
-
+    public PostCatgTest(JdbcTemplate template,PostCatgService service){
+        this.template = template;
+        this.service = service;
+    }
 
     @Before
     public void setup(){
-        switch ( testName.getMethodName() ){
-            case "findAll_test_01" :
-                bacthUpdateQuery("" +
-                        "insert into " +
-                        "(POST_CATG_UUID, POST_CATG_NM, POST_CATG_USE_YN, REGN_NM) " +
-                        "valuess ('test', 'test', 1, '경기도');");
-                break;
+        if ("findAll_test_01".equals(testName.getMethodName())) {
+            bacthUpdateQuery("" +
+                    "insert into " +
+                    "(POST_CATG_UUID, POST_CATG_NM, POST_CATG_USE_YN, REGN_NM) " +
+                    "valuess ('test', 'test', 1, '경기도');");
         }
     }
 
     @After
     public void tearDown(){
-        switch ( testName.getMethodName() ){
-            case "findAll_test_01" :
-                bacthUpdateQuery("" +
-                        "delete from " +
-                        "TB_POST_CATG_M  " +
-                        "where POST_CATG_UUID = 'test' and POST_CATG_NM = 'test'and POST_CATG_USE_YN = 1 and REGN_NM = '경기도';");
-                break;
+        if ("findAll_test_01".equals(testName.getMethodName())) {
+            bacthUpdateQuery("" +
+                    "delete from " +
+                    "TB_POST_CATG_M  " +
+                    "where POST_CATG_UUID = 'test' and POST_CATG_NM = 'test'and POST_CATG_USE_YN = 1 and REGN_NM = '경기도';");
         }
     }
 
 
     @Test
-    public void findAll_test_01() throws Exception{
+    public void findAll_test_01() {
         Assertions.assertThat(
-            service.findAll().stream().allMatch(postCatgDTO -> {
-                return postCatgDTO.getPostCatgUuid().equals("test") &&
-                        postCatgDTO.getPostCatgNm().equals("test") &&
-                        postCatgDTO.isPostCatgUseYn() == true &&
-                        postCatgDTO.getRegnNm().equals("경기도");
-            })
-        );
+            service
+            .findAll()
+            .stream()
+            .allMatch(postCatgDTO -> postCatgDTO.getPostCatgUuid().equals("test") &&
+                    postCatgDTO.getPostCatgNm().equals("test") &&
+                    postCatgDTO.isPostCatgUseYn() &&
+                    postCatgDTO.getRegnNm().equals("경기도"))
+        ).isTrue();
+
     }
 
 

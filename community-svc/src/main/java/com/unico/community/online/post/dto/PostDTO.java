@@ -17,6 +17,6 @@ public class PostDTO {
     private String postTitle;
     private String postContents;
     private boolean postUseYn;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+
+
 }

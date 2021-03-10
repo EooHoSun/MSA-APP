@@ -1,5 +1,6 @@
 package com.unico.community.online;
 
+import com.querydsl.core.types.OrderSpecifier;
 import lombok.Builder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,4 +21,5 @@ public class PageVO {
     public Pageable getPageable(){
         return PageRequest.of(this.page, this.size, this.sort);
     }
+    public OrderSpecifier[] getOrderArr(){ return this.sort.stream().toArray(OrderSpecifier[]::new);}
 }

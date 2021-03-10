@@ -17,4 +17,5 @@ public class PostSearchDTO extends PageVO {
     private String postContents;
 
 
+
 }

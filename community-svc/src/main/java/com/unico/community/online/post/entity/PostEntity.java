@@ -1,39 +1,32 @@
 package com.unico.community.online.post.entity;
 
 
+import com.fasterxml.jackson.databind.ser.Serializers;
+import com.unico.community.online.BaseVO;
 import com.unico.community.online.post.dto.PostDTO;
 import com.unico.community.online.postCatg.entity.PostCatgEntity;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @NoArgsConstructor( access = AccessLevel.PROTECTED )
 @AllArgsConstructor
 @Entity
 @Getter
+@Builder
 @Table(name = "TB_POST_M")
-public class PostEntity {
+public class PostEntity extends BaseVO {
 
     @EmbeddedId
     @Column(unique = true, nullable = false)
     private PostVO postVO;
 
-    private long userNum;
 
     @ManyToOne(fetch=FetchType.LAZY, optional = true)
     @JoinColumn(name="postCatgUuid", referencedColumnName = "postCatgUuid", insertable = false, updatable = false)
     private PostCatgEntity postCatgEntity;
 
-    public static PostEntityBuilder builder() {
-        return new PostEntityBuilder();
-    }
 
     public void setPostCatgEntity(PostCatgEntity postCatgEntity){
         if( postCatgEntity != null )
@@ -48,12 +41,6 @@ public class PostEntity {
     private String postContents;
     @ColumnDefault("true")
     private boolean postUseYn;
-    @Column
-    @CreationTimestamp
-    private LocalDateTime createdAt;
-    @Column
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
 
 
     public void update(PostDTO dto){
@@ -74,66 +61,17 @@ public class PostEntity {
 
     }
 
-    public static class PostEntityBuilder {
-        private PostVO postVO;
-        private long userNum;
-        private PostCatgEntity postCatgEntity;
-        private String postTitle;
-        private String postContents;
-        private boolean postUseYn;
-        private LocalDateTime createdAt;
-        private LocalDateTime updatedAt;
 
-        PostEntityBuilder() {
-        }
 
-        public PostEntityBuilder postVO(PostVO postVO) {
-            this.postVO = postVO;
-            return this;
-        }
-
-        public PostEntityBuilder userNum(long userNum) {
-            this.userNum = userNum;
-            return this;
-        }
-
-        public PostEntityBuilder postCatgEntity(PostCatgEntity postCatgEntity) {
-            this.postCatgEntity = postCatgEntity;
-            return this;
-        }
-
-        public PostEntityBuilder postTitle(String postTitle) {
-            this.postTitle = postTitle;
-            return this;
-        }
-
-        public PostEntityBuilder postContents(String postContents) {
-            this.postContents = postContents;
-            return this;
-        }
-
-        public PostEntityBuilder postUseYn(boolean postUseYn) {
-            this.postUseYn = postUseYn;
-            return this;
-        }
-
-        public PostEntityBuilder createdAt(LocalDateTime createdAt) {
-            this.createdAt = createdAt;
-            return this;
-        }
-
-        public PostEntityBuilder updatedAt(LocalDateTime updatedAt) {
-            this.updatedAt = updatedAt;
-            return this;
-        }
-
-        public PostEntity build() {
-            return new PostEntity(postVO, userNum, postCatgEntity, postTitle, postContents, postUseYn, createdAt, updatedAt);
-        }
-
-        public String toString() {
-            return "PostEntity.PostEntityBuilder(postVO=" + this.postVO + ", userNum=" + this.userNum + ", postCatgEntity=" + this.postCatgEntity + ", postTitle=" + this.postTitle + ", postContents=" + this.postContents + ", postUseYn=" + this.postUseYn + ", createdAt=" + this.createdAt + ", updatedAt=" + this.updatedAt + ")";
-        }
+    @Override
+    public String toString() {
+        return "PostEntity{" +
+                "postVO=" + postVO +
+                ", postCatgEntity=" + postCatgEntity +
+                ", postTitle='" + postTitle + '\'' +
+                ", postContents='" + postContents + '\'' +
+                ", postUseYn=" + postUseYn +
+                '}';
     }
 }
 

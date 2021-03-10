@@ -1,13 +1,12 @@
 package com.unico.community.online.postCatg.entity;
 
 
+import com.unico.community.online.BaseVO;
 import com.unico.community.online.post.dto.PostDTO;
 import com.unico.community.online.post.entity.PostEntity;
 import com.unico.community.online.post.entity.PostVO;
 import com.unico.community.online.postCatg.dto.PostCatgDTO;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -17,29 +16,23 @@ import java.util.List;
 
 @NoArgsConstructor( access = AccessLevel.PROTECTED )
 @AllArgsConstructor
-@Builder
 @Entity
 @Getter
+@Builder
 @Table(name = "TB_POST_CATG_M")
-public class PostCatgEntity {
+public class PostCatgEntity extends BaseVO {
+
     @Id
     private String postCatgUuid;
     private String postCatgNm;
     private boolean postCatgUseYn;
     private String regnNm;
-    @Column
-    @CreationTimestamp
-    private LocalDateTime createdAt;
-    @Column
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
 
     //지연로딩 ( N + 1 방지 )
     @OneToMany(mappedBy = "postCatgEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<PostEntity> postList;
 
     public void addPostList(PostDTO dto){
-
         if( this.postList == null ) this.postList = new ArrayList<>();
 
         PostEntity entity = PostEntity.builder()
@@ -48,8 +41,6 @@ public class PostCatgEntity {
                 .postVO(PostVO.builder().postCatgUuid(this.postCatgUuid).postNum(dto.getPostVO().getPostNum()).build())
                 .postContents(dto.getPostContents())
                 .postUseYn(dto.isPostUseYn())
-                .userNum(dto.getUserNum())
-                .createdAt(LocalDateTime.now())
                 .build();
 
         this.postList.add(entity);
@@ -70,5 +61,15 @@ public class PostCatgEntity {
 
     }
 
+    @Override
+    public String toString() {
+        return "PostCatgEntity{" +
+                "postCatgUuid='" + postCatgUuid + '\'' +
+                ", postCatgNm='" + postCatgNm + '\'' +
+                ", postCatgUseYn=" + postCatgUseYn +
+                ", regnNm='" + regnNm + '\'' +
+                ", postList=" + postList +
+                '}';
+    }
 
 }
